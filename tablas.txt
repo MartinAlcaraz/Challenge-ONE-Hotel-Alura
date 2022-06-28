@@ -1,0 +1,30 @@
+
+    create table huesped(
+	id int auto_increment, 
+	nombre varchar(50), 
+	apellido varchar(50), 
+	fechaNacimiento date,
+    nacionalidad varchar(50), 
+    telefono varchar(50), 
+    id_reserva int, 
+    primary key(id)
+    )Engine=InnoDB;
+    
+    
+    create table reservas(
+    id int auto_increment, 
+    fechaEntrada date, 
+    fechaSalida date, 
+    valor double, 
+    formaDePago varchar(50), 
+    primary key(id)
+    )Engine=InnoDB;
+    
+    
+mysql> alter table huesped add foreign key(id_reserva) references reservas(id);
+
+
+    
+    
+    
+    
