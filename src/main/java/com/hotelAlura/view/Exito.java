@@ -26,8 +26,8 @@ public class Exito extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Exito dialog = new Exito();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			Exito dialog = new Exito(-1);
+			dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -37,9 +37,10 @@ public class Exito extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Exito() {
+	public Exito(int idReserva) {		
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Exito.class.getResource("/imagenes/aH-40px.png")));
-		setBounds(100, 100, 394, 226);
+		setBounds(100, 100, 394, 258);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(SystemColor.control);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -53,12 +54,24 @@ public class Exito extends JDialog {
 			contentPanel.add(lblNewLabel);
 		}
 		{
-			JLabel lblNewLabel_1 = new JLabel("Datos guardados satisfactoriamente");
+			JLabel lblNewLabel_1 = new JLabel("Datos guardados satisfactoriamente.");
 			lblNewLabel_1.setForeground(new Color (12, 138, 199));
 			lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 18));
 			lblNewLabel_1.setBounds(27, 122, 322, 21);
 			contentPanel.add(lblNewLabel_1);
 		}
+		
+		JLabel lblNewLabel_1 = new JLabel("Su numero de reserva es:");
+		lblNewLabel_1.setForeground(new Color(12, 138, 199));
+		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_1.setBounds(27, 154, 195, 21);
+		contentPanel.add(lblNewLabel_1);
+		
+		JLabel id_Reserva = new JLabel(String.valueOf(idReserva));
+		id_Reserva.setForeground(Color.BLACK);
+		id_Reserva.setFont(new Font("Arial", Font.BOLD, 16));
+		id_Reserva.setBounds(224, 154, 74, 21);
+		contentPanel.add(id_Reserva);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -83,5 +96,4 @@ public class Exito extends JDialog {
 			}
 		}
 	}
-
 }

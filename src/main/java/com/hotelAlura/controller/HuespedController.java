@@ -1,6 +1,7 @@
 package com.hotelAlura.controller;
 
 import java.sql.Connection;
+import java.util.List;
 
 import com.hotelAlura.dao.HuespedDAO;
 import com.hotelAlura.factory.ConnectionFactory;
@@ -19,4 +20,17 @@ public class HuespedController {
 	public void registrar(Huesped huesped) {
 		huespedDao.registrar(huesped);
 	}
+
+	public List<Huesped> listaHuespedes() {
+		return huespedDao.listaHuespedes();
+	}
+
+	public int eliminar(Integer id) {
+		return huespedDao.eliminar(id);
+	}
+	
+	
+	
+	
+	
 }

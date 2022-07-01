@@ -24,6 +24,14 @@
 mysql> alter table huesped add foreign key(id_reserva) references reservas(id);
 
 
+1* no funcionó 
+alter table reservas add constraint huesped foreign key (id) references huesped (id_reserva) on delete cascade;
+
+2* probar
+alter table huesped add foreign key(id_reserva) references reservas(id) on delete cascade;
+
+3* 
+alter table huesped add constraint reservas foreign key (id_reserva) references reservas(id) on delete cascade;
     
     
     

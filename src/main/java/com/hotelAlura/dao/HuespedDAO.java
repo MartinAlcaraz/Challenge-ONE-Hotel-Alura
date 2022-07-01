@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.hotelAlura.model.Huesped;
+
 
 public class HuespedDAO {
 
@@ -33,5 +36,44 @@ public class HuespedDAO {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);	
 		}
+	}
+
+	public List<Huesped> listaHuespedes() {
+		
+
+		try (final java.sql.PreparedStatement statement = conexion
+				.prepareStatement("SELECT nombre, apellido, fechaNacimiento, nacionalidad, telefono, id_reserva FROM huesped ORDER BY apellido");) {
+
+			statement.execute();
+
+			try (ResultSet resultSet = statement.getResultSet()) {
+
+				List<Huesped> listaResultado = new ArrayList<>();
+				while (resultSet.next()) {
+					Huesped huesped = new Huesped(resultSet.getString("nombre"), resultSet.getString("apellido"),
+							resultSet.getDate("fechaNacimiento"), resultSet.getString("nacionalidad"), 
+							resultSet.getString("telefono"), resultSet.getInt("id_reserva"));
+
+					listaResultado.add(huesped);
+				}
+				return listaResultado;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException();
+		}
+
+	}
+
+	public int eliminar(Integer id_reserva) {
+		try (final PreparedStatement statement = conexion.prepareStatement("DELETE FROM huesped WHERE id_reserva = ?")) {
+
+			statement.setInt(1, id_reserva);
+			statement.execute();
+			int cant = statement.getUpdateCount(); // devuelve cuantas filas fueron modificadas luego de realizar la consulta
+			return cant;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 }

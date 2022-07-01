@@ -229,7 +229,7 @@ public class RegistroHuesped extends JFrame {
 				int respuesta = JOptionPane.showConfirmDialog(null, "Quiere volver atras? La reserva no se guardará.");
 				if (respuesta == JOptionPane.OK_OPTION) {
 
-					reservaController.eliminarReserva(idReserva);
+					reservaController.eliminar(idReserva);
 
 					Reservas ventanaReservas = new Reservas();
 					ventanaReservas.setVisible(true);
@@ -248,7 +248,8 @@ public class RegistroHuesped extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (camposValidos()) {
 					guardarHuesped();
-					Exito exito = new Exito();
+					
+					Exito exito = new Exito(idReserva);
 					exito.setVisible(true);
 					dispose();
 				}
@@ -268,7 +269,7 @@ public class RegistroHuesped extends JFrame {
 						"Quiere salir al menú principal? La reserva no se guardará.");
 				if (respuesta == JOptionPane.OK_OPTION) {
 
-					reservaController.eliminarReserva(idReserva);
+					reservaController.eliminar(idReserva);
 
 					MenuUsuario usuario = new MenuUsuario();
 					usuario.setVisible(true);
@@ -328,7 +329,7 @@ public class RegistroHuesped extends JFrame {
 		String nacionalidad = String.valueOf(txtNacionalidad.getSelectedItem());
 		String telefono = txtTelefono.getText();
 
-		Huesped huesped = new Huesped(nombre, apellido, nacionalidad, telefono, fechaNacSQL, idReserva);
+		Huesped huesped = new Huesped(nombre, apellido, fechaNacSQL, nacionalidad, telefono, idReserva);
 
 		huespedController.registrar(huesped);
 	}
