@@ -28,6 +28,15 @@ public class HuespedController {
 	public int eliminar(Integer id) {
 		return huespedDao.eliminar(id);
 	}
+
+	public Huesped getHuesped(int idReserva) {
+		
+		return huespedDao.getHuesped(idReserva); 
+	}
+
+	public int editar(Huesped huesped) {
+		return huespedDao.editar(huesped);
+	}
 	
 	
 	

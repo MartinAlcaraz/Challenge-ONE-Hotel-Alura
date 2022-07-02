@@ -26,14 +26,12 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import javax.swing.SwingConstants;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+
 
 @SuppressWarnings("serial")
 public class EditarReserva extends JFrame {
@@ -54,8 +52,8 @@ public class EditarReserva extends JFrame {
 				try {
 					Busqueda frameBusqueda= new Busqueda();
 					ReservaController reservaController =null;
-					JTable tabla=null;
-					EditarReserva frame = new EditarReserva(frameBusqueda , reservaController, tabla, -1);
+					
+					EditarReserva frame = new EditarReserva(frameBusqueda , reservaController, -1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -67,7 +65,7 @@ public class EditarReserva extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EditarReserva(Busqueda frameBusqueda, ReservaController resController, JTable tablaReservas,  int idReserva) {
+	public EditarReserva(Busqueda frameBusqueda, ReservaController resController, int idReserva) {
 		this.reservaController = resController;
 		Reserva reserva = reservaController.getReserva(idReserva);
 		
@@ -197,8 +195,17 @@ public class EditarReserva extends JFrame {
 		JButton btnAtras = new JButton("Atras");
 		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameBusqueda.setEnabled(true);
-				dispose();
+				
+				Object[] opciones = { "Aceptar", "Cancelar" };
+				int eleccion = JOptionPane.showOptionDialog(rootPane, "Si vuelve no se editará la reserva.",
+						"Mensaje de Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						opciones, "Aceptar");
+				
+				if (eleccion == JOptionPane.YES_OPTION) {
+					frameBusqueda.setEnabled(true);
+					dispose();
+				} 
+				
 			}
 		});
 		btnAtras.setForeground(Color.WHITE);

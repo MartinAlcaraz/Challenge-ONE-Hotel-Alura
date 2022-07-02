@@ -76,4 +76,52 @@ public class HuespedDAO {
 		}
 
 	}
+
+	public Huesped getHuesped(int idReserva) {
+		
+		try (final java.sql.PreparedStatement statement = conexion
+				.prepareStatement("SELECT nombre, apellido, fechaNacimiento, nacionalidad, telefono FROM huesped WHERE id_reserva = ?");) {
+
+			statement.setInt(1, idReserva);
+			statement.execute();
+
+			try (ResultSet resultSet = statement.getResultSet()) {
+
+				Huesped huesped = null;
+				while (resultSet.next()) {
+					huesped = new Huesped(resultSet.getString("nombre"), resultSet.getString("apellido"),
+							resultSet.getDate("fechaNacimiento"), resultSet.getString("nacionalidad"), 
+							resultSet.getString("telefono"), idReserva);
+				}
+				return huesped;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException();
+		}
+
+	}
+
+	public int editar(Huesped huesped) {
+		
+		try (final PreparedStatement statement = conexion.prepareStatement(
+				"UPDATE huesped SET nombre =?, apellido =?, fechaNacimiento =?, nacionalidad =?, telefono =?  WHERE id_reserva = ?")){
+				
+			statement.setString(1, huesped.getNombre());
+			statement.setString(2, huesped.getApellido());
+			statement.setDate(3, huesped.getFechaNacimiento());
+			statement.setString(4, huesped.getNacionalidad());
+			statement.setString(5, huesped.getTelefono());
+			statement.setInt(6, huesped.getId_Reserva());
+									
+			statement.execute();
+			int cant = statement.getUpdateCount(); // cantidad de resultados que fueron actualizados
+
+			return cant;
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		
+	}
 }

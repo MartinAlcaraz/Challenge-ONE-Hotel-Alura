@@ -98,7 +98,6 @@ public class ReservaDAO {
 			statement.execute();
 			int cant = statement.getUpdateCount(); // cantidad de resultados que fueron actualizados
 
-			System.out.println(cant);
 			return cant;
 			
 		} catch (SQLException e) {

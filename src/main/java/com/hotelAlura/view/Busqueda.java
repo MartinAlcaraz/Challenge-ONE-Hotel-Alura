@@ -28,8 +28,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
 import javax.swing.ListSelectionModel;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowEvent;
 
@@ -150,7 +148,7 @@ public class Busqueda extends JFrame {
 	}
 
 	private boolean tieneFilaElegida(JTable tabla) {
-		return (tabla.getSelectedRowCount() == 0 || tabla.getSelectedColumnCount() == 0);
+		return (tabla.getSelectedRowCount() == 0 || tabla.getSelectedColumnCount() == 0) ;
 	}
 
 	private void eliminarReserva() {
@@ -206,27 +204,38 @@ public class Busqueda extends JFrame {
 
 		if (modeloHuesped.getValueAt(tablaHuespedes.getSelectedRow(), tablaHuespedes.getSelectedColumn()) != null) {
 
-			Integer id = Integer.valueOf(modeloHuesped.getValueAt(tablaHuespedes.getSelectedRow(), 5).toString());
+			Integer idReserva = Integer.valueOf(modeloHuesped.getValueAt(tablaHuespedes.getSelectedRow(), 5).toString());
+			
+			EditarRegistroHuesped editarHuesped = new EditarRegistroHuesped(this, huespedController, idReserva);
 
-			//int itemsEliminados = huespedController.editar(id);
-
-//			modeloHuesped.removeRow(tablaHuespedes.getSelectedRow());
-
-	//		JOptionPane.showMessageDialog(this, itemsEliminados + " item eliminado con éxito!");
+			this.setEnabled(false);
+			
+			editarHuesped.setVisible(true);
+			
+			editarHuesped.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					borrarTablaHuespedes();
+					cargarTablaHuespedes();
+					tablaHuespedes.clearSelection();
+				}
+			});
+		
 		} else {
 			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
 		}
 	}
 	
 	private void editarReserva() {
-
+		
 		if (modeloReserva.getValueAt(tablaReservas.getSelectedRow(), tablaReservas.getSelectedColumn()) != null) {
 
 			Integer idReserva = Integer.valueOf(modeloReserva.getValueAt(tablaReservas.getSelectedRow(), 4).toString());
 			
-			EditarReserva editarReserva = new EditarReserva(this, reservaController, tablaReservas, idReserva);
+			EditarReserva editarReserva = new EditarReserva(this, reservaController, idReserva);
 
 			this.setEnabled(false);
+			
 			editarReserva.setVisible(true);
 			
 			editarReserva.addWindowListener(new WindowAdapter() {
@@ -234,6 +243,7 @@ public class Busqueda extends JFrame {
 				public void windowClosed(WindowEvent e) {
 					borrarTablaReservas();
 					cargarTablaReservas();
+					tablaReservas.clearSelection();
 				}
 			});
 		
@@ -246,13 +256,7 @@ public class Busqueda extends JFrame {
 	 * Create the frame.
 	 */
 	public Busqueda() {
-		addWindowFocusListener(new WindowFocusListener() {
-			public void windowGainedFocus(WindowEvent e) {
-			}
-			public void windowLostFocus(WindowEvent e) {
-			}
-		});
-		
+				
 		huespedController = new HuespedController();
 		reservaController = new ReservaController();
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Busqueda.class.getResource("/imagenes/lupa2.png")));
@@ -305,7 +309,7 @@ public class Busqueda extends JFrame {
 					}
 					editarReserva();
 				}
-				actualizarTablas();				
+								
 			}
 			
 		});
