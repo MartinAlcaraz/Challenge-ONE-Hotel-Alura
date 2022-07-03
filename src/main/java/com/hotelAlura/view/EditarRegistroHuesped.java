@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,8 +49,8 @@ public class EditarRegistroHuesped extends JFrame {
 			public void run() {
 				try {
 					Busqueda frameBusqueda = null;
-					HuespedController huespedController= null;
-					EditarRegistroHuesped frame = new EditarRegistroHuesped(frameBusqueda , huespedController, -1);
+					HuespedController huespedController = null;
+					EditarRegistroHuesped frame = new EditarRegistroHuesped(frameBusqueda, huespedController, -1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -63,7 +64,7 @@ public class EditarRegistroHuesped extends JFrame {
 		this.huespedController = huespedControllerArg;
 		this.idReserva = idReserva;
 		Huesped huesped = huespedController.getHuesped(idReserva);
-		
+
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegistroHuesped.class.getResource("/imagenes/persona.png")));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -93,6 +94,12 @@ public class EditarRegistroHuesped extends JFrame {
 		((JTextField) txtFechaN.getDateEditor()).setEditable(false);
 
 		txtFechaN.setBounds(76, 260, 255, 33);
+
+		// evita seleccionar fecha de nacimiento menor de 18 años.
+
+		Date fecha = java.sql.Date.valueOf(LocalDate.now().minusYears(18));
+		txtFechaN.setMaxSelectableDate(fecha);
+
 		txtFechaN.setDate(huesped.getFechaNacimiento());
 		contentPane.add(txtFechaN);
 
@@ -261,13 +268,12 @@ public class EditarRegistroHuesped extends JFrame {
 		txtNreserva.setBounds(76, 465, 255, 33);
 		txtNreserva.setText(String.valueOf(idReserva));
 		contentPane.add(txtNreserva);
-		
+
 		JButton btnAtras = new JButton("Atras");
 		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				int respuesta = JOptionPane.showConfirmDialog(null,
-						"Quieres salir? Los cambios no se guardarán.");
+
+				int respuesta = JOptionPane.showConfirmDialog(null, "Quieres salir? Los cambios no se guardarán.");
 				if (respuesta == JOptionPane.OK_OPTION) {
 
 					frameBusqueda.setEnabled(true);
@@ -280,15 +286,15 @@ public class EditarRegistroHuesped extends JFrame {
 		btnAtras.setBackground(new Color(65, 105, 225));
 		btnAtras.setBounds(253, 515, 67, 52);
 		contentPane.add(btnAtras);
-		
+
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				if (camposValidos()) {
 					int resultado = editarHuesped();
 
-					if (resultado > 0 ) {
+					if (resultado > 0) {
 						JOptionPane.showMessageDialog(contentPane, "EL huesped se editó con éxito!");
 						frameBusqueda.setEnabled(true);
 						dispose();
@@ -351,4 +357,3 @@ public class EditarRegistroHuesped extends JFrame {
 		return true;
 	}
 }
-

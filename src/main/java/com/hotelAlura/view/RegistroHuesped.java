@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,6 +90,13 @@ public class RegistroHuesped extends JFrame {
 		((JTextField) txtFechaN.getDateEditor()).setEditable(false);
 
 		txtFechaN.setBounds(576, 260, 255, 33);
+
+		// evita seleccionar fecha de nacimiento menor de 18 años.
+		
+		Date fecha = java.sql.Date.valueOf(LocalDate.now().minusYears(18));
+		txtFechaN.setMaxSelectableDate(fecha);
+		txtFechaN.setDate(fecha);
+		
 		contentPane.add(txtFechaN);
 
 		txtNacionalidad = new JComboBox<String>();
@@ -248,7 +256,7 @@ public class RegistroHuesped extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (camposValidos()) {
 					guardarHuesped();
-					
+
 					Exito exito = new Exito(idReserva);
 					exito.setVisible(true);
 					dispose();

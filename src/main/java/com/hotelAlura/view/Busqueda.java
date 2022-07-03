@@ -33,6 +33,7 @@ import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -72,8 +73,7 @@ public class Busqueda extends JFrame {
 		modeloHuesped.addColumn("Fecha de Nacimiento");
 		modeloHuesped.addColumn("Nacionalidad");
 		modeloHuesped.addColumn("Telefono");
-		modeloHuesped.addColumn("Id Reserva");
-		
+		modeloHuesped.addColumn("Id Reserva");	
 	}
 
 	private void configurarTablaReservas() {
@@ -93,6 +93,8 @@ public class Busqueda extends JFrame {
 					.addRow(new Object[] { huesped.getNombre(), huesped.getApellido(), huesped.getFechaNacimiento(),
 							huesped.getNacionalidad(), huesped.getTelefono(), huesped.getId_Reserva() });
 		});
+		
+		
 	}
 
 	private void cargarTablaReservas() {
@@ -152,7 +154,7 @@ public class Busqueda extends JFrame {
 		});
 	}
 
-	private boolean tieneFilaElegida(JTable tabla) {
+	private boolean noTieneFilaElegida(JTable tabla) {
 		return (tabla.getSelectedRowCount() == 0 || tabla.getSelectedColumnCount() == 0) ;
 	}
 
@@ -309,28 +311,7 @@ public class Busqueda extends JFrame {
 		});
 		
 		
-		JButton btnEditar = new JButton("");
-		btnEditar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				if (tablaHuespedes.isVisible()) {
-					if (tieneFilaElegida(tablaHuespedes)) {
-						JOptionPane.showMessageDialog(null, "Por favor, elije un item");
-						return;
-					}
-					editarHuesped();
-				} else {
-					if (tieneFilaElegida(tablaReservas)) {
-						JOptionPane.showMessageDialog(null, "Por favor, elije un item");
-						return;
-					}
-					editarReserva();
-				}
-								
-			}
-			
-		});
-		
+		JButton btnEditar = new JButton("");		
 		btnEditar.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/editar-texto.png")));
 		btnEditar.setBackground(SystemColor.menu);
 		btnEditar.setBounds(633, 416, 54, 41);
@@ -361,6 +342,9 @@ public class Busqueda extends JFrame {
 		panel.setBounds(10, 127, 874, 265);
 		contentPane.add(panel);
 
+		JScrollPane scrollPaneHuespedes = new JScrollPane();
+		panel.addTab("Huespedes", new ImageIcon(Busqueda.class.getResource("/imagenes/persona.png")), scrollPaneHuespedes, null);
+		
 		//tablaHuespedes = new JTable();
 		tablaHuespedes = new JTable(){
 			@Override
@@ -371,10 +355,12 @@ public class Busqueda extends JFrame {
 		tablaHuespedes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaHuespedes.setFont(new Font("Arial", Font.PLAIN, 14));
 		
-		tablaHuespedes.setTableHeader(null);
-		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/persona.png")), tablaHuespedes,
-				null);
+		scrollPaneHuespedes.setViewportView(tablaHuespedes);
+		
 
+		JScrollPane scrollPaneReservas = new JScrollPane();
+		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/calendario.png")), scrollPaneReservas, null);
+		
 		//en lugar de instanciar tablaReservas = new JTable(); se instancia la tabla sobreescribiendo el metodo isCellEditable para evitar que se puedan editar las celdas en la tabla.
 		tablaReservas = new JTable(){
 			@Override
@@ -382,30 +368,42 @@ public class Busqueda extends JFrame {
 				return false;
 			}
 		};
+		
 		tablaReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaReservas.setFont(new Font("Arial", Font.PLAIN, 14));
-		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/calendario.png")), tablaReservas,
-				null);
+		
+
+		scrollPaneReservas.setViewportView(tablaReservas);
 
 		JButton btnEliminar = new JButton("");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (tablaHuespedes.isVisible()) {
-					if (tieneFilaElegida(tablaHuespedes)) {
-						JOptionPane.showMessageDialog(null, "Por favor, elije un item");
+				if (scrollPaneHuespedes.isVisible()) {
+					if (noTieneFilaElegida(tablaHuespedes)) {
+						JOptionPane.showMessageDialog(null, "Por favor, elije un item.");
 						return;
 					}
-					eliminarHuesped();
+					
+					int respuesta = preguntar("Eliminar el huesped?");
+
+					if (respuesta == JOptionPane.YES_OPTION) {
+						eliminarHuesped();
+					}
 				} else {
-					if (tieneFilaElegida(tablaReservas)) {
-						JOptionPane.showMessageDialog(null, "Por favor, elije un item");
+					if (noTieneFilaElegida(tablaReservas)) {
+						JOptionPane.showMessageDialog(null, "Por favor, elije un item.");
 						return;
 					}
-					eliminarReserva();
+					int respuesta = preguntar("Eliminar la reserva?");
+					
+					if (respuesta == JOptionPane.YES_OPTION) {
+						eliminarReserva();
+					}
 				}
 				actualizarTablas();
 			}
+
 		});
 
 		btnEliminar.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/deletar.png")));
@@ -418,8 +416,8 @@ public class Busqueda extends JFrame {
 		lblNewLabel_2.setBounds(25, 10, 104, 107);
 		contentPane.add(lblNewLabel_2);
 
-		JButton btnNewButton = new JButton("Ver todas las reservas y huespedes");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnVerTodo = new JButton("Ver todas las reservas y huespedes");
+		btnVerTodo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				borrarTablaReservas();
 				borrarTablaHuespedes();
@@ -428,15 +426,44 @@ public class Busqueda extends JFrame {
 				actualizarTablas();
 			}
 		});
-		btnNewButton.setFont(new Font("Arial", Font.BOLD, 14));
-		btnNewButton.setBounds(275, 85, 309, 41);
-		contentPane.add(btnNewButton);
+		btnVerTodo.setFont(new Font("Arial", Font.BOLD, 14));
+		btnVerTodo.setBounds(275, 85, 309, 41);
+		contentPane.add(btnVerTodo);
+
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (scrollPaneHuespedes.isVisible()) {
+					if (noTieneFilaElegida(tablaHuespedes)) {
+						JOptionPane.showMessageDialog(null, "Por favor, elije un item");
+						return;
+					}
+					editarHuesped();
+				} else {
+					if (noTieneFilaElegida(tablaReservas)) {
+						JOptionPane.showMessageDialog(null, "Por favor, elije un item");
+						return;
+					}
+					editarReserva();
+				}
+			}
+		});
+
+		
 		setResizable(false);
 
 		configurarTablaReservas();
 		configurarTablaHuespedes();
 		cargarTablaReservas();
 		cargarTablaHuespedes();
+	}
+	
+	private int preguntar(String pregunta) {
+		Object[] opciones = { "Aceptar", "Cancelar" };
+		int eleccion = JOptionPane.showOptionDialog(rootPane, pregunta,
+				"Mensaje de Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				opciones, "Aceptar");
+		return eleccion;
 	}
 
 }

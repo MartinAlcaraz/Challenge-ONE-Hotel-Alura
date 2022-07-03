@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import javax.swing.SwingConstants;
 
-
 @SuppressWarnings("serial")
 public class EditarReserva extends JFrame {
 
@@ -40,7 +39,7 @@ public class EditarReserva extends JFrame {
 	private JTextField txtValor;
 	private JComboBox<String> txtFormaPago;
 	private JDateChooser txtFechaE, txtFechaS;
-	private ReservaController reservaController;	
+	private ReservaController reservaController;
 
 	/**
 	 * Launch the application.
@@ -50,10 +49,10 @@ public class EditarReserva extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Busqueda frameBusqueda= new Busqueda();
-					ReservaController reservaController =null;
-					
-					EditarReserva frame = new EditarReserva(frameBusqueda , reservaController, -1);
+					Busqueda frameBusqueda = new Busqueda();
+					ReservaController reservaController = null;
+
+					EditarReserva frame = new EditarReserva(frameBusqueda, reservaController, -1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -68,7 +67,7 @@ public class EditarReserva extends JFrame {
 	public EditarReserva(Busqueda frameBusqueda, ReservaController resController, int idReserva) {
 		this.reservaController = resController;
 		Reserva reserva = reservaController.getReserva(idReserva);
-		
+
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Reservas.class.getResource("/imagenes/calendario.png")));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 409, 540);
@@ -103,6 +102,10 @@ public class EditarReserva extends JFrame {
 		// para que no pueda editarse la fecha ingresando desde teclado
 		((JTextField) this.txtFechaE.getDateEditor()).setEditable(false);
 
+		// evita seleccionar fecha anterior al dia actual.
+		Date fechaHoy = java.sql.Date.valueOf(LocalDate.now());
+		txtFechaE.setMinSelectableDate(fechaHoy);
+
 		txtFechaE.setBounds(88, 166, 235, 33);
 		txtFechaE.setDate(reserva.getFechaEntrada());
 		panel.add(txtFechaE);
@@ -121,7 +124,12 @@ public class EditarReserva extends JFrame {
 		txtFechaS.setBounds(88, 234, 235, 33);
 		txtFechaS.getCalendarButton().setBackground(Color.WHITE);
 		((JTextField) this.txtFechaS.getDateEditor()).setEditable(false);
-		
+
+		// evita seleccionar fecha anterior al dia actual + 1 dia de estadia.
+		LocalDate Manhana = LocalDate.now().plusDays(1);
+		java.sql.Date fechaManhana = java.sql.Date.valueOf(Manhana);
+		txtFechaS.setMinSelectableDate(fechaManhana);
+
 		txtFechaS.setDate(reserva.getFechaSalida());
 		panel.add(txtFechaS);
 
@@ -157,8 +165,8 @@ public class EditarReserva extends JFrame {
 				if (txtFechaE.getDate() != null && txtFechaS.getDate() != null) {
 					int dias = diasDeReserva();
 					if (dias > 0) {
-						
-						int cantidadEditado = editarReserva(dias , idReserva);
+
+						int cantidadEditado = editarReserva(dias, idReserva);
 
 						if (cantidadEditado > 0) {
 							JOptionPane.showMessageDialog(contentPanel, "Se ha editado la reserva!");
@@ -195,17 +203,17 @@ public class EditarReserva extends JFrame {
 		JButton btnAtras = new JButton("Atras");
 		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				Object[] opciones = { "Aceptar", "Cancelar" };
 				int eleccion = JOptionPane.showOptionDialog(rootPane, "Si vuelve no se editará la reserva.",
 						"Mensaje de Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						opciones, "Aceptar");
-				
+
 				if (eleccion == JOptionPane.YES_OPTION) {
 					frameBusqueda.setEnabled(true);
 					dispose();
-				} 
-				
+				}
+
 			}
 		});
 		btnAtras.setForeground(Color.WHITE);
@@ -272,4 +280,3 @@ public class EditarReserva extends JFrame {
 		});
 	}
 }
-

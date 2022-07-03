@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -97,7 +98,11 @@ public class Reservas extends JFrame {
 		txtFechaE = new JDateChooser();
 		// para que no pueda editarse la fecha ingresando desde teclado
 		((JTextField) this.txtFechaE.getDateEditor()).setEditable(false);
-
+		
+		// evita seleccionar fecha anterior al dia actual.
+		Date fechaHoy = java.sql.Date.valueOf(LocalDate.now());		
+		txtFechaE.setMinSelectableDate(fechaHoy);
+		
 		txtFechaE.setBounds(88, 166, 235, 33);
 		panel.add(txtFechaE);
 
@@ -113,6 +118,13 @@ public class Reservas extends JFrame {
 
 		txtFechaS = new JDateChooser();
 		txtFechaS.setBounds(88, 234, 235, 33);
+		
+		// evita seleccionar fecha anterior al dia actual + 1 dia de estadia.
+		LocalDate Manhana = LocalDate.now().plusDays(1);  
+		java.sql.Date fechaManhana = java.sql.Date.valueOf(Manhana);		
+		txtFechaS.setMinSelectableDate(fechaManhana);
+		
+		
 		txtFechaS.getCalendarButton().setBackground(Color.WHITE);
 		((JTextField) this.txtFechaS.getDateEditor()).setEditable(false);
 		panel.add(txtFechaS);
