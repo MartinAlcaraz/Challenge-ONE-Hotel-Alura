@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import com.hotelAlura.controller.HuespedController;
 import com.hotelAlura.controller.ReservaController;
@@ -30,6 +31,8 @@ import java.awt.Toolkit;
 import javax.swing.ListSelectionModel;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -63,13 +66,14 @@ public class Busqueda extends JFrame {
 	}
 
 	private void configurarTablaHuespedes() {
-		modeloHuesped = (DefaultTableModel) tablaHuespedes.getModel();
+		modeloHuesped = (DefaultTableModel) tablaHuespedes.getModel();	
 		modeloHuesped.addColumn("Nombre");
 		modeloHuesped.addColumn("Apellido");
 		modeloHuesped.addColumn("Fecha de Nacimiento");
 		modeloHuesped.addColumn("Nacionalidad");
 		modeloHuesped.addColumn("Telefono");
 		modeloHuesped.addColumn("Id Reserva");
+		
 	}
 
 	private void configurarTablaReservas() {
@@ -126,9 +130,10 @@ public class Busqueda extends JFrame {
 
 	private void buscarHuesped(String texto) {
 		List<Huesped> listaHuespedes = huespedController.listaHuespedes();
-
+		String text = texto.toLowerCase();
 		listaHuespedes.forEach(huesped -> {
-			if (huesped.getApellido().contains(texto)) {
+			String apellido = huesped.getApellido().toLowerCase();
+			if (apellido.contains(text)) {
 				modeloHuesped
 						.addRow(new Object[] { huesped.getNombre(), huesped.getApellido(), huesped.getFechaNacimiento(),
 								huesped.getNacionalidad(), huesped.getTelefono(), huesped.getId_Reserva() });
@@ -256,11 +261,11 @@ public class Busqueda extends JFrame {
 	 * Create the frame.
 	 */
 	public Busqueda() {
-				
+		
 		huespedController = new HuespedController();
 		reservaController = new ReservaController();
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Busqueda.class.getResource("/imagenes/lupa2.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 910, 516);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -269,7 +274,7 @@ public class Busqueda extends JFrame {
 		setLocationRelativeTo(null);
 
 		txtBuscar = new JTextField();
-		txtBuscar.setBounds(615, 85, 190, 31);
+		txtBuscar.setBounds(615, 90, 190, 31);
 		contentPane.add(txtBuscar);
 		txtBuscar.setColumns(10);
 
@@ -289,9 +294,21 @@ public class Busqueda extends JFrame {
 
 		btnBuscar.setBackground(Color.WHITE);
 		btnBuscar.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/lupa2.png")));
-		btnBuscar.setBounds(815, 75, 54, 41);
+		btnBuscar.setBounds(815, 85, 54, 41);
 		contentPane.add(btnBuscar);
 
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				char key = e.getKeyChar();
+				
+				if (key == KeyEvent.VK_ENTER) {
+					btnBuscar.doClick();			
+				}
+			}
+		});
+		
+		
 		JButton btnEditar = new JButton("");
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -316,7 +333,7 @@ public class Busqueda extends JFrame {
 		
 		btnEditar.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/editar-texto.png")));
 		btnEditar.setBackground(SystemColor.menu);
-		btnEditar.setBounds(587, 416, 54, 41);
+		btnEditar.setBounds(633, 416, 54, 41);
 		contentPane.add(btnEditar);
 
 		JLabel lblNewLabel_4 = new JLabel("Sistema de Búsqueda");
@@ -328,6 +345,7 @@ public class Busqueda extends JFrame {
 		JButton btnSalir = new JButton("");
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				MenuUsuario usuario = new MenuUsuario();
 				usuario.setVisible(true);
 				dispose();
@@ -352,7 +370,8 @@ public class Busqueda extends JFrame {
 		};
 		tablaHuespedes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaHuespedes.setFont(new Font("Arial", Font.PLAIN, 14));
-
+		
+		tablaHuespedes.setTableHeader(null);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/persona.png")), tablaHuespedes,
 				null);
 
@@ -391,14 +410,8 @@ public class Busqueda extends JFrame {
 
 		btnEliminar.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/deletar.png")));
 		btnEliminar.setBackground(SystemColor.menu);
-		btnEliminar.setBounds(651, 416, 54, 41);
+		btnEliminar.setBounds(697, 416, 54, 41);
 		contentPane.add(btnEliminar);
-
-		JButton btnCancelar = new JButton("");
-		btnCancelar.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/cancelar.png")));
-		btnCancelar.setBackground(SystemColor.menu);
-		btnCancelar.setBounds(713, 416, 54, 41);
-		contentPane.add(btnCancelar);
 
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/Ha-100px.png")));
