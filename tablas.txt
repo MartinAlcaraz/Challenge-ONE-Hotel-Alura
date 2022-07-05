@@ -21,18 +21,23 @@
     )Engine=InnoDB;
     
     
-mysql> alter table huesped add foreign key(id_reserva) references reservas(id);
+mysql> alter table huesped add foreign key(id_reserva) references reservas(id) on delete cascade;
 
-
-1* no funcionó 
-alter table reservas add constraint huesped foreign key (id) references huesped (id_reserva) on delete cascade;
-
-2* probar
-alter table huesped add foreign key(id_reserva) references reservas(id) on delete cascade;
-
-3* 
-alter table huesped add constraint reservas foreign key (id_reserva) references reservas(id) on delete cascade;
     
+ 
+ -- Tabla usuarios
+
+
+ create table usuarios ( id int auto_increment, user varchar(50), password blob NOT NULL, primary key(id))Engine=InnoDB;
+ 
+ insert into usuarios (user, password) values ('usuario1234', aes_encrypt(1234, 'llave'));
+ 
+ select user, convert(aes_decrypt(password,'llave') using utf8) from usuarios;
+    
+ 
+ Para hacer la consulta de usuario y password:
+ 
+ SELECT user, password FROM usuarios WHERE user = 'user1' AND password = (aes_encrypt('user1','llave'));
     
     
     

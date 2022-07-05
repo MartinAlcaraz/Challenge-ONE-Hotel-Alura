@@ -7,8 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.hotelAlura.controller.UsuarioController;
-import com.hotelAlura.model.Usuario;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
@@ -17,7 +15,6 @@ import java.awt.Font;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 
@@ -27,7 +24,7 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsuario;
 	private JPasswordField txtContrasena;
-	
+
 	UsuarioController usuarioController;
 
 	/**
@@ -50,9 +47,9 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
-		
+
 		this.usuarioController = new UsuarioController();
-		
+
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Login.class.getResource("/imagenes/perfil-del-usuario.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 538);
@@ -95,11 +92,11 @@ public class Login extends JFrame {
 					MenuUsuario menuUsuario = new MenuUsuario();
 					menuUsuario.setVisible(true);
 					dispose();
-				}else {
+				} else {
 					JOptionPane.showMessageDialog(btnLogin, "El usuario o contraseña son incorrectos.");
 				}
 			}
-		
+
 		});
 		btnLogin.setBounds(409, 322, 103, 33);
 		contentPane.add(btnLogin);
@@ -130,27 +127,15 @@ public class Login extends JFrame {
 		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\Genesys\\Documents\\imagenesAluraHotel\\Ha-100px.png"));
 		lblNewLabel_1.setBounds(470, 30, 145, 94);
 		contentPane.add(lblNewLabel_1);
-	}
-	
-	private boolean datosCorrectosLogin() {
-		
-		List<Usuario> listaUsuarios=  usuarioController.listar();
 				
-		String nombreUsuario = txtUsuario.getText();
+	}
+
+	private boolean datosCorrectosLogin() {
+
+		String user = txtUsuario.getText();
 		String password = String.valueOf(txtContrasena.getPassword());
-		boolean ok = false;
-			
-		for (Usuario user : listaUsuarios) {
-						
-			if (nombreUsuario.equals( user.getnombreUsuario())) {
-				if(password.equals( user.getPassword())) {
-					ok = true;
-					break;
-				}else {
-					break;
-				}
-			}
-		}
-		return ok;
+
+		boolean datoCorrectos = usuarioController.login(user, password);
+		return datoCorrectos;
 	}
 }

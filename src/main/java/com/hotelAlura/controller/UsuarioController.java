@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.hotelAlura.dao.UsuarioDAO;
 import com.hotelAlura.factory.ConnectionFactory;
-import com.hotelAlura.model.Usuario;
 
 public class UsuarioController {
 
@@ -16,8 +15,16 @@ public class UsuarioController {
 		Connection conexion = factory.conectar();
 		this.usuarioDao = new UsuarioDAO(conexion);
 	}
+
+	public boolean login(String user, String password) {
+		return usuarioDao.login(user, password);
+	}
 	
-	public List<Usuario> listar(){
-		return usuarioDao.listar();
+	public int crearUsuario(String user, String password) {
+		return usuarioDao.crearUsuario(user, password);
+	}
+		
+	public List<String> listaUsuarios(){
+		return usuarioDao.listaUsuarios();
 	}
 }
